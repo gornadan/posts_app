@@ -7,7 +7,7 @@ const PostList = ({posts, title, remove}) => {
     if (!posts.length) {
         return (
             <h1 style={{textAlign: 'center'}}>
-                Посты не найдены!!!
+                Нет постов!!!
             </h1>
         )
     }
