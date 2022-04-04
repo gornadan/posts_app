@@ -1,30 +1,51 @@
-import React from 'react';
-import { Redirect, Route, Switch} from "react-router-dom";
-import Posts from "../pages/Posts";
-import Error from "../pages/Error";
-import About from "../pages/About";
-import PostIdPage from "../pages/PostIdPage";
-
+import React, {useContext} from 'react';
+import {Redirect, Route, Switch} from "react-router-dom";
+import {privateRoutes, publicRoutes} from "../router/index";
+import {AuthContext} from "../context";
+import MyLoader from "./UI/loader/MyLoader";
 
 
 const AppRouter = () => {
-    return (
-        <Switch>
-            <Route path="/about" >
-                <About/>
-            </Route>
-            <Route exact path="/posts" >
-                <Posts/>
-            </Route>
-            <Route exact path="/posts/:id" >
-                <PostIdPage/>
-            </Route>
-            <Route path="/error" >
-                <Error/>
-            </Route>
-            <Redirect to='/posts' />
+    const {isAuth, isLoading} = useContext(AuthContext);
 
-        </Switch>
+    if(isLoading) {
+        return <MyLoader/>
+    }
+
+    return (
+        isAuth
+        ?
+            <Switch>
+                {privateRoutes.map(route => {
+                        return(
+                            <Route
+                                component={route.component}
+                                path={route.path}
+                                exact={route.exact}
+                                key={route.path}
+                            />
+                        )
+                    }
+                )}
+                <Redirect to='/posts'/>
+            </Switch>
+            :
+            <Switch>
+                {publicRoutes.map(route => {
+                        return(
+                            <Route
+                                component={route.component}
+                                path={route.path}
+                                exact={route.exact}
+                                key={route.path}
+                            />
+                        )
+                    }
+                )}
+                <Redirect to='/login'/>
+
+            </Switch>
+
     );
 };
 
